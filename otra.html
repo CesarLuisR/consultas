@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Agendar Cita - Dra. Brenda Enelis | Neurocirugía Funcional" />
+		<title>Reservar Cita | Dra. Brenda Enelis</title>
+
+		<link
+			href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+			rel="stylesheet" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+			rel="stylesheet" />
+
+		<style>
+			:root {
+				--primary: #2563eb;
+				--primary-dark: #1e40af;
+				--primary-light: #eff6ff;
+				--secondary: #0d9488;
+				--bg-body: #f8fafc;
+				--surface: #ffffff;
+				--text-main: #1e293b;
+				--text-muted: #64748b;
+				--border: #e2e8f0;
+				--radius: 16px;
+				--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+				--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+				--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+				--success: #10b981;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: "Outfit", sans-serif;
+			}
+
+			body {
+				background-color: var(--bg-body);
+				color: var(--text-main);
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+			}
+
+			/* --- NAVIGATION --- */
+			.navbar {
+				background: var(--surface);
+				border-bottom: 1px solid var(--border);
+				padding: 1rem 0;
+				position: sticky;
+				top: 0;
+				z-index: 50;
+			}
+
+			.container {
+				max-width: 1000px;
+				margin: 0 auto;
+				padding: 0 1.5rem;
+			}
+
+			.nav-content {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.brand {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				font-weight: 700;
+				font-size: 1.25rem;
+				color: var(--primary-dark);
+				text-decoration: none;
+			}
+
+			.brand-icon {
+				background: var(--primary-light);
+				color: var(--primary);
+				width: 40px;
+				height: 40px;
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.25rem;
+			}
+
+			/* --- MAIN LAYOUT --- */
+			main {
+				flex: 1;
+				padding: 2rem 0;
+			}
+
+			.app-grid {
+				display: grid;
+				grid-template-columns: 1fr 380px;
+				gap: 2rem;
+				align-items: start;
+			}
+
+			@media (max-width: 900px) {
+				.app-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			/* --- SECTIONS --- */
+			.card {
+				background: var(--surface);
+				border-radius: var(--radius);
+				box-shadow: var(--shadow-sm);
+				padding: 1.5rem;
+				border: 1px solid var(--border);
+				margin-bottom: 1.5rem;
+				transition: transform 0.2s, box-shadow 0.2s;
+			}
+
+			.card-header {
+				margin-bottom: 1.25rem;
+			}
+
+			.card-title {
+				font-size: 1.1rem;
+				font-weight: 600;
+				color: var(--text-main);
+				margin-bottom: 0.25rem;
+			}
+
+			.card-subtitle {
+				font-size: 0.875rem;
+				color: var(--text-muted);
+			}
+
+			/* --- SERVICE SELECTION --- */
+			.service-list {
+				display: grid;
+				gap: 1rem;
+			}
+
+			.service-option {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 1rem;
+				border: 2px solid var(--border);
+				border-radius: 12px;
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			.service-option:hover {
+				border-color: var(--primary);
+				background: var(--primary-light);
+			}
+
+			.service-option.active {
+				border-color: var(--primary);
+				background: var(--primary-light);
+				box-shadow: 0 0 0 2px var(--primary-light);
+			}
+
+			.service-info h4 {
+				font-size: 1rem;
+				margin-bottom: 0.2rem;
+			}
+
+			.service-info p {
+				font-size: 0.85rem;
+				color: var(--text-muted);
+			}
+
+			.service-price {
+				font-weight: 600;
+				color: var(--primary);
+			}
+
+			/* --- CALENDAR WIDGET --- */
+			.calendar-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 1rem;
+			}
+
+			.calendar-grid {
+				display: grid;
+				grid-template-columns: repeat(7, 1fr);
+				gap: 0.5rem;
+				text-align: center;
+				margin-bottom: 1.5rem;
+			}
+
+			.day-name {
+				font-size: 0.75rem;
+				font-weight: 600;
+				color: var(--text-muted);
+				text-transform: uppercase;
+			}
+
+			.date-btn {
+				aspect-ratio: 1;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 50%;
+				font-size: 0.9rem;
+				cursor: pointer;
+				transition: all 0.2s;
+				border: 1px solid transparent;
+			}
+
+			.date-btn:hover:not(.disabled) {
+				background: var(--primary-light);
+				color: var(--primary);
+			}
+
+			.date-btn.active {
+				background: var(--primary);
+				color: white;
+				font-weight: 600;
+			}
+
+			.date-btn.disabled {
+				color: #cbd5e1;
+				cursor: not-allowed;
+			}
+
+			.time-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 0.75rem;
+			}
+
+			.time-btn {
+				padding: 0.6rem;
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				background: white;
+				color: var(--text-main);
+				font-size: 0.9rem;
+				cursor: pointer;
+				transition: all 0.2s;
+			}
+
+			.time-btn:hover {
+				border-color: var(--primary);
+				color: var(--primary);
+			}
+
+			.time-btn.active {
+				background: var(--primary);
+				color: white;
+				border-color: var(--primary);
+			}
+
+			/* --- SUMMARY SIDEBAR --- */
+			.summary-card {
+				position: sticky;
+				top: 6rem;
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: var(--radius);
+				padding: 1.5rem;
+				box-shadow: var(--shadow-lg);
+			}
+
+			.summary-row {
+				display: flex;
+				justify-content: space-between;
+				margin-bottom: 0.75rem;
+				font-size: 0.9rem;
+			}
+
+			.summary-total {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 1rem;
+				padding-top: 1rem;
+				border-top: 1px solid var(--border);
+				font-weight: 700;
+				font-size: 1.1rem;
+				color: var(--primary-dark);
+			}
+
+			.btn-primary {
+				width: 100%;
+				background: var(--primary);
+				color: white;
+				border: none;
+				padding: 0.9rem;
+				border-radius: 10px;
+				font-weight: 600;
+				font-size: 1rem;
+				cursor: pointer;
+				margin-top: 1.5rem;
+				transition: background 0.2s;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0.5rem;
+			}
+
+			.btn-primary:hover {
+				background: var(--primary-dark);
+			}
+
+			.btn-primary:disabled {
+				background: var(--text-muted);
+				cursor: not-allowed;
+				opacity: 0.7;
+			}
+
+			/* --- PAYMENT FORM (Hidden by default) --- */
+			.payment-form {
+				margin-top: 1.5rem;
+				padding-top: 1.5rem;
+				border-top: 1px solid var(--border);
+				display: none;
+				animation: fadeIn 0.3s ease;
+			}
+
+			.payment-form.show {
+				display: block;
+			}
+
+			.input-group {
+				margin-bottom: 1rem;
+			}
+
+			.input-group label {
+				display: block;
+				font-size: 0.85rem;
+				font-weight: 500;
+				margin-bottom: 0.4rem;
+				color: var(--text-main);
+			}
+
+			.input-field {
+				width: 100%;
+				padding: 0.75rem;
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				font-size: 0.95rem;
+				outline: none;
+				transition: border 0.2s;
+			}
+
+			.input-field:focus {
+				border-color: var(--primary);
+				box-shadow: 0 0 0 3px var(--primary-light);
+			}
+
+			.card-row {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1rem;
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			/* --- SUCCESS MODAL --- */
+			.modal-overlay {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.5);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				z-index: 100;
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity 0.3s;
+				backdrop-filter: blur(4px);
+			}
+
+			.modal-overlay.active {
+				opacity: 1;
+				pointer-events: all;
+			}
+
+			.success-modal {
+				background: white;
+				padding: 2.5rem;
+				border-radius: 20px;
+				text-align: center;
+				max-width: 400px;
+				width: 90%;
+				transform: scale(0.9);
+				transition: transform 0.3s;
+			}
+
+			.modal-overlay.active .success-modal {
+				transform: scale(1);
+			}
+
+			.success-icon {
+				width: 80px;
+				height: 80px;
+				background: #ecfdf5;
+				color: var(--success);
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 2.5rem;
+				margin: 0 auto 1.5rem;
+			}
+
+			.success-modal h3 {
+				font-size: 1.5rem;
+				margin-bottom: 0.5rem;
+				color: var(--text-main);
+			}
+
+			.success-modal p {
+				color: var(--text-muted);
+				margin-bottom: 2rem;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<nav class="navbar">
+			<div class="container nav-content">
+				<a href="main.html" class="brand">
+					<div class="brand-icon">
+						<i class="ri-calendar-check-line"></i>
+					</div>
+					<span>Dra. Brenda Enelis</span>
+				</a>
+				<div
+					style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500">
+					Agendamiento Seguro
+				</div>
+			</div>
+		</nav>
+
+		<!-- Main Content -->
+		<main>
+			<div class="container">
+				<div class="app-grid">
+					<!-- Left Column: Selection -->
+					<div class="selection-column">
+						<!-- Step 1: Service -->
+						<section class="card">
+							<div class="card-header">
+								<h2 class="card-title">1. Selecciona el Servicio</h2>
+								<p class="card-subtitle">
+									Elige el tipo de consulta que necesitas
+								</p>
+							</div>
+							<div class="service-list">
+								<div
+									class="service-option active"
+									onclick="selectService(this, 'Consulta Inicial', 150)">
+									<div class="service-info">
+										<h4>Consulta Inicial</h4>
+										<p>Evaluación completa (45 min)</p>
+									</div>
+									<div class="service-price">$150</div>
+								</div>
+								<div
+									class="service-option"
+									onclick="selectService(this, 'Sesión de Seguimiento', 90)">
+									<div class="service-info">
+										<h4>Sesión de Seguimiento</h4>
+										<p>Revisión de tratamiento (30 min)</p>
+									</div>
+									<div class="service-price">$90</div>
+								</div>
+								<div
+									class="service-option"
+									onclick="selectService(this, 'Consulta Virtual', 70)">
+									<div class="service-info">
+										<h4>Consulta Virtual</h4>
+										<p>Videollamada especializada (30 min)</p>
+									</div>
+									<div class="service-price">$70</div>
+								</div>
+							</div>
+						</section>
+
+						<!-- Step 2: Date & Time -->
+						<section class="card">
+							<div class="card-header">
+								<h2 class="card-title">2. Fecha y Hora</h2>
+								<p class="card-subtitle">
+									Horarios disponibles para Diciembre 2024
+								</p>
+							</div>
+
+							<!-- Fake Calendar -->
+							<div class="calendar-header">
+								<button
+									style="
+										border: none;
+										background: none;
+										font-size: 1.2rem;
+										cursor: pointer;
+									">
+									<i class="ri-arrow-left-s-line"></i>
+								</button>
+								<span
+									style="
+										font-weight: 600;
+										color: var(--text-main);
+									"
+									>Diciembre 2024</span
+								>
+								<button
+									style="
+										border: none;
+										background: none;
+										font-size: 1.2rem;
+										cursor: pointer;
+									">
+									<i class="ri-arrow-right-s-line"></i>
+								</button>
+							</div>
+
+							<div class="calendar-grid">
+								<div class="day-name">Do</div>
+								<div class="day-name">Lu</div>
+								<div class="day-name">Ma</div>
+								<div class="day-name">Mi</div>
+								<div class="day-name">Ju</div>
+								<div class="day-name">Vi</div>
+								<div class="day-name">Sa</div>
+
+								<!-- Empty slots -->
+								<div></div>
+								<div></div>
+								<div></div>
+								<!-- Days -->
+								<div class="date-btn disabled">1</div>
+								<div class="date-btn disabled">2</div>
+								<div class="date-btn disabled">3</div>
+								<div class="date-btn disabled">4</div>
+								<div class="date-btn">5</div>
+								<div class="date-btn">6</div>
+								<div class="date-btn">7</div>
+								<div class="date-btn disabled">8</div>
+								<div class="date-btn">9</div>
+								<div class="date-btn active">10</div>
+								<div class="date-btn">11</div>
+								<div class="date-btn">12</div>
+								<div class="date-btn">13</div>
+								<div class="date-btn">14</div>
+								<!-- More days truncated for design simplicity -->
+							</div>
+
+							<div class="time-grid" id="time-slots">
+								<button class="time-btn" onclick="selectTime(this)">
+									09:00 AM
+								</button>
+								<button class="time-btn" onclick="selectTime(this)">
+									10:30 AM
+								</button>
+								<button
+									class="time-btn active"
+									onclick="selectTime(this)">
+									11:00 AM
+								</button>
+								<button class="time-btn" onclick="selectTime(this)">
+									02:00 PM
+								</button>
+								<button class="time-btn" onclick="selectTime(this)">
+									03:30 PM
+								</button>
+								<button class="time-btn" onclick="selectTime(this)">
+									04:15 PM
+								</button>
+							</div>
+						</section>
+					</div>
+
+					<!-- Right Column: Summary & Payment -->
+					<div class="summary-column">
+						<div class="summary-card">
+							<h3
+								style="
+									font-size: 1.1rem;
+									margin-bottom: 1.5rem;
+									color: var(--text-main);
+								">
+								Resumen de la Cita
+							</h3>
+
+							<div class="summary-row">
+								<span style="color: var(--text-muted)"
+									>Servicio:</span
+								>
+								<span style="font-weight: 500" id="summary-service"
+									>Consulta Inicial</span
+								>
+							</div>
+							<div class="summary-row">
+								<span style="color: var(--text-muted)">Fecha:</span>
+								<span style="font-weight: 500" id="summary-date"
+									>10 Dic, 2024</span
+								>
+							</div>
+							<div class="summary-row">
+								<span style="color: var(--text-muted)">Hora:</span>
+								<span style="font-weight: 500" id="summary-time"
+									>11:00 AM</span
+								>
+							</div>
+							<div class="summary-row">
+								<span style="color: var(--text-muted)">Doctor:</span>
+								<span style="font-weight: 500"
+									>Dra. Brenda Enelis</span
+								>
+							</div>
+
+							<div class="summary-total">
+								<span>Total a Pagar:</span>
+								<span id="summary-price">$150.00</span>
+							</div>
+
+							<button
+								id="btn-continue"
+								class="btn-primary"
+								onclick="showPayment()">
+								Continuar al Pago
+							</button>
+
+							<!-- Simulated Payment Form -->
+							<div class="payment-form" id="payment-form">
+								<h4
+									style="
+										margin-bottom: 1rem;
+										color: var(--text-main);
+									">
+									Detalles de Pago
+								</h4>
+								<div class="input-group">
+									<label>Nombre en la tarjeta</label>
+									<input
+										type="text"
+										class="input-field"
+										placeholder="Juan Pérez" />
+								</div>
+								<div class="input-group">
+									<label>Número de Tarjeta</label>
+									<div style="position: relative">
+										<input
+											type="text"
+											class="input-field"
+											placeholder="0000 0000 0000 0000" />
+										<i
+											class="ri-bank-card-line"
+											style="
+												position: absolute;
+												right: 12px;
+												top: 12px;
+												color: var(--text-muted);
+											"></i>
+									</div>
+								</div>
+								<div class="card-row">
+									<div class="input-group">
+										<label>Expira</label>
+										<input
+											type="text"
+											class="input-field"
+											placeholder="MM/AA" />
+									</div>
+									<div class="input-group">
+										<label>CVC</label>
+										<input
+											type="text"
+											class="input-field"
+											placeholder="123" />
+									</div>
+								</div>
+								<button class="btn-primary" onclick="processPayment()">
+									<i class="ri-lock-line"></i> Pagar & Confirmar
+								</button>
+							</div>
+						</div>
+						
+						<!-- Security Note -->
+						<div style="margin-top: 1rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 5px;">
+							<i class="ri-secure-payment-line"></i> Pagos encriptados y seguros
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<!-- Success Modal -->
+		<div class="modal-overlay" id="success-modal">
+			<div class="success-modal">
+				<div class="success-icon">
+					<i class="ri-check-line"></i>
+				</div>
+				<h3>¡Cita Confirmada!</h3>
+				<p>
+					Hemos enviado los detalles de tu cita y el recibo de pago a tu
+					correo electrónico.
+				</p>
+				<button class="btn-primary" onclick="closeModal()">
+					Entendido, gracias
+				</button>
+			</div>
+		</div>
+
+		<script>
+			// State
+			let currentService = "Consulta Inicial";
+			let currentPrice = 150;
+			let currentTime = "11:00 AM";
+			let currentDate = "10 Dic, 2024";
+
+			// DOM Elements
+			const summaryService = document.getElementById("summary-service");
+			const summaryPrice = document.getElementById("summary-price");
+			const summaryTime = document.getElementById("summary-time");
+			const paymentForm = document.getElementById("payment-form");
+			const btnContinue = document.getElementById("btn-continue");
+			const successModal = document.getElementById("success-modal");
+
+			// Select Service
+			function selectService(element, serviceName, price) {
+				// Remove active class from all
+				document
+					.querySelectorAll(".service-option")
+					.forEach((el) => el.classList.remove("active"));
+				// Add active to clicked
+				element.classList.add("active");
+
+				// Update State
+				currentService = serviceName;
+				currentPrice = price;
+
+				// Update UI
+				summaryService.textContent = currentService;
+				summaryPrice.textContent = "$" + currentPrice + ".00";
+				
+				// Reset Payment flow if open
+				if(paymentForm.classList.contains('show')) {
+					paymentForm.classList.remove("show");
+					btnContinue.style.display = "flex";
+					btnContinue.textContent = "Actualizar & Pagar";
+				}
+			}
+
+			// Select Time
+			function selectTime(element) {
+				document
+					.querySelectorAll(".time-btn")
+					.forEach((el) => el.classList.remove("active"));
+				element.classList.add("active");
+				currentTime = element.textContent.trim();
+				summaryTime.textContent = currentTime;
+			}
+
+			// Show Payment Form
+			function showPayment() {
+				btnContinue.style.display = "none";
+				paymentForm.classList.add("show");
+			}
+
+			// Process Payment (Simulated)
+			function processPayment() {
+				const payBtn = paymentForm.querySelector(".btn-primary");
+				const originalText = payBtn.innerHTML;
+
+				// Loading state
+				payBtn.disabled = true;
+				payBtn.innerHTML =
+					'<i class="ri-loader-4-line ri-spin"></i> Procesando...';
+
+				setTimeout(() => {
+					payBtn.disabled = false;
+					payBtn.innerHTML = originalText;
+					successModal.classList.add("active");
+				}, 1500);
+			}
+
+			function closeModal() {
+				successModal.classList.remove("active");
+				// Redirect to home
+				window.location.href = "main.html";
+			}
+
+			// Calendar Date Selection
+			document.querySelectorAll('.date-btn:not(.disabled)').forEach(btn => {
+				btn.addEventListener('click', function() {
+					document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+					this.classList.add('active');
+					// Simulate date change logic if needed
+					currentDate = this.textContent.trim() + " Dic, 2024";
+					document.getElementById('summary-date').textContent = currentDate;
+				});
+			});
+		</script>
+	</body>
+</html>
